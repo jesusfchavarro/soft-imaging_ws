@@ -22,11 +22,14 @@ Complete la tabla:
 
 | Integrante | github nick |
 |------------|-------------|
-|            |             |
+| Jesus F. Chavarro | jesusfchavarro |
 
 ## Discusión
 
-(describa brevemente las actividades realizadas y los resultados obtenidos)
+1. En la conversión de la escala de grises se emplearon varias estrategias, la utilización del brillo, el promedio de los colores y el promedio de los componentes de HBS, en esta ultima se podia notar una perdida de información dado que la imagen no quedaba del todo bien. Adicionalmente se realizo la conversión a la escala de un color primario que era un trabajo trivial con las funciones de processing.
+2. Con el histograma se puede ver la distribucion de brillo y con esto que aspectro se utiliza mas, si es una imagen oscura se tendra que no habran muchos tonos claros.
+3. Se realizo un pequeño slide para segmentar la imagen apartir del histograma. Si se segmentaba en los valles, la imagen se perdia demasiado y si se segmentaba en los picos del histograma aun se podia visualizar y entender el contenido. 
+4. Como los video utilizados eran de poca resolución se podia calcular el histograma y segmentar la imagen sin perder la fluides, con video mas grandes ya se notaban algunas fallas de rendimiento.
 
 ## Entrega
 

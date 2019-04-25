@@ -36,6 +36,7 @@ void setup() {
 }
 
 void draw() {
+  println(frameRate);
   if (myMovie.available()) {    
     myMovie.read();
     myMovie.loadPixels();
