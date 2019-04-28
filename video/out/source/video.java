@@ -18,35 +18,48 @@ public class video extends PApplet {
 
 
 
-//Movie myMovie;
-Capture myMovie;
+Movie myMovie;
+//Capture myMovie;
 
-PGraphics pg,pg2,pg3;
-PImage img;
-PImage img2;
+PGraphics pg,pg2,pg3,pg4,pg5,pg6;
+PImage img, img2, img3, img4, img5;
 HScrollbar hs;
 
 int[] histogram;
-int COLOR_FILTER = 6;
+int COLOR_FILTER = 2;
+
+float[][] conv1 = { { -1, -1, -1 },
+                     { -1,  9, -1 },
+                     { -1, -1, -1 } }; 
+                    
+float[][] conv2 = { { 0, 1, 0 },
+                  { 1,  -4, 1 },
+                  { 0, 1, 0 } }; 
+
+float[][] conv3 = { { 0.11f, 0.11f, 0.11f },
+                  { 0.11f, 0.11f, 0.11f },
+                  { 0.11f, 0.11f, 0.11f } }; 
+
 
 public void setup() {
   
   pg = createGraphics(250, 250);
   pg2 = createGraphics(250, 250);
   pg3 = createGraphics(250, 250);
+  pg4 = createGraphics(250, 250);
+  pg5 = createGraphics(250, 250);
+  pg6 = createGraphics(250, 250);
 
-  //myMovie = new Movie(this, "movie.ogg");
-  //myMovie.loop();
+  myMovie = new Movie(this, "movie.ogg");
+  myMovie.loop();
 
-  myMovie = new Capture(this, 250, 250,10); 
-  myMovie.start();
+  //myMovie = new Capture(this, 250, 250,10); 
+  //myMovie.start();
   
   while(!myMovie.available()){
     delay(10);
   }
   myMovie.read();
-  println(myMovie.width);
-  println(myMovie.height);
   img2 = createImage(myMovie.width, myMovie.height, RGB);
   
   hs = new HScrollbar(530, 255, 250, 10);
@@ -54,6 +67,7 @@ public void setup() {
 }
 
 public void draw() {
+  println(frameRate);
   if (myMovie.available()) {    
     myMovie.read();
     myMovie.loadPixels();
@@ -66,16 +80,15 @@ public void draw() {
       
       histogram[(int)c]++;
     }
-    myMovie.updatePixels();
     img2.updatePixels();
     
     pg.beginDraw();
-    pg.image(myMovie,-90,-20);
+    pg.image(myMovie,0,0);
     pg.endDraw();
     image(pg, 10, 10);
     
     pg2.beginDraw();
-    pg2.image(img2,-90,-20);
+    pg2.image(img2,0,0);
     pg2.endDraw();
     image(pg2, 270, 10); 
     
@@ -93,6 +106,28 @@ public void draw() {
   
     hs.update();
     hs.display();
+    
+    img3 = convolution(myMovie,conv1,3);
+
+    pg4.beginDraw();
+    pg4.image(img3,0,0);
+    pg4.endDraw();
+    image(pg4, 10, 270); 
+
+    img4 = convolution(myMovie,conv2,3);
+
+    pg5.beginDraw();
+    pg5.image(img4,0,0);
+    pg5.endDraw();
+    image(pg5, 270, 270); 
+
+
+    img5 = convolution(myMovie,conv3,3);
+
+    pg6.beginDraw();
+    pg6.image(img5,0,0);
+    pg6.endDraw();
+    image(pg6, 530, 270); 
   }
 }
 
@@ -124,6 +159,50 @@ public int filterColor(int c,int i){
 public int filter(int c,int i,float min, float max){
   float s = toGray(c,i);
   return s>=min && s<=max ? filterColor(c,i) : color(255);
+}
+
+public int convolution(int x, int y, float[][] matrix, int matrixsize, PImage img)
+{
+  float rtotal = 0.0f;
+  float gtotal = 0.0f;
+  float btotal = 0.0f;
+  int offset = matrixsize / 2;
+  for (int i = 0; i < matrixsize; i++){
+    for (int j= 0; j < matrixsize; j++){
+      // What pixel are we testing
+      int xloc = x+i-offset;
+      int yloc = y+j-offset;
+      int loc = xloc + img.width*yloc;
+      // Make sure we haven't walked off our image, we could do better here
+      loc = constrain(loc,0,img.pixels.length-1);
+      // Calculate the convolution
+      rtotal += (red(img.pixels[loc]) * matrix[i][j]);
+      gtotal += (green(img.pixels[loc]) * matrix[i][j]);
+      btotal += (blue(img.pixels[loc]) * matrix[i][j]);
+    }
+  }
+  // Make sure RGB is within range
+  rtotal = constrain(rtotal, 0, 255);
+  gtotal = constrain(gtotal, 0, 255);
+  btotal = constrain(btotal, 0, 255);
+  // Return the resulting color
+  return color(rtotal, gtotal, btotal);
+}
+
+public PImage convolution(PImage image,float[][] matrix, int matrixsize){
+  PImage covImg = createImage(image.width, image.height, RGB);
+  
+  image.loadPixels();
+  covImg.loadPixels();
+  for (int x = 0; x < image.width; x++) {
+    for (int y = 0; y < image.height; y++ ) {
+      int c = convolution(x, y, matrix, matrixsize, image);
+      int loc = x + y*image.width;
+      covImg.pixels[loc] = c;
+    }
+  }
+  updatePixels();
+  return covImg;
 }
 class HScrollbar {
   int swidth, sheight;    // width and height of bar
@@ -199,7 +278,7 @@ class HScrollbar {
     return spos2-xpos+15;
   }
 }
-  public void settings() {  size(790, 270); }
+  public void settings() {  size(790, 530); }
   static public void main(String[] passedArgs) {
     String[] appletArgs = new String[] { "video" };
     if (passedArgs != null) {

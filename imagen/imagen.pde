@@ -5,6 +5,19 @@ HScrollbar hs;
 int[] histogram = new int[256];
 int COLOR_FILTER = 1;
 
+float[][] conv1 = { { -1, -1, -1 },
+                     { -1,  9, -1 },
+                     { -1, -1, -1 } }; 
+                    
+float[][] conv2 = { { 0, 1, 0 },
+                  { 1,  -4, 1 },
+                  { 0, 1, 0 } }; 
+
+float[][] conv3 = { { 0.11, 0.11, 0.11 },
+                  { 0.11, 0.11, 0.11 },
+                  { 0.11, 0.11, 0.11 } }; 
+
+
 void setup() {
   size(790, 530);
   pg = createGraphics(250, 250);
@@ -41,9 +54,7 @@ void setup() {
   image(pg2, 270, 10); 
 
   hs = new HScrollbar(530, 255, 250, 10);
-  float[][] conv1 = { { -1, -1, -1 },
-                     { -1,  9, -1 },
-                     { -1, -1, -1 } }; 
+  
 
   img3 = convolution(img,conv1,3);
 
@@ -52,10 +63,6 @@ void setup() {
   pg4.endDraw();
   image(pg4, 10, 270); 
 
-  float[][] conv2 = { { 0, 1, 0 },
-                     { 1,  -4, 1 },
-                     { 0, 1, 0 } }; 
-
   img4 = convolution(img,conv2,3);
 
   pg5.beginDraw();
@@ -63,9 +70,6 @@ void setup() {
   pg5.endDraw();
   image(pg5, 270, 270); 
 
-  float[][] conv3 = { { 0.11, 0.11, 0.11 },
-                     { 0.11, 0.11, 0.11 },
-                     { 0.11, 0.11, 0.11 } }; 
 
   img5 = convolution(img,conv3,3);
 
