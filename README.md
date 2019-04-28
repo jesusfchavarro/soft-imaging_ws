@@ -30,6 +30,14 @@ Complete la tabla:
 2. Con el histograma se puede ver la distribucion de brillo y con esto que aspectro se utiliza mas, si es una imagen oscura se tendra que no habran muchos tonos claros.
 3. Se realizo un pequeño slide para segmentar la imagen apartir del histograma. Si se segmentaba en los valles, la imagen se perdia demasiado y si se segmentaba en los picos del histograma aun se podia visualizar y entender el contenido. 
 4. Como los video utilizados eran de poca resolución se podia calcular el histograma y segmentar la imagen sin perder la fluides, con video mas grandes ya se notaban algunas fallas de rendimiento.
+5. La eficiencia se tomo como el framerate al que se podia llegar siendo el mximo framarate 60, se tomo el framerate en las siguientes condiciones:
+    - Pasando el video a escala de grises: 59.4
+    - Pasando el video a escala de grises, calculando el histograma y pintandolo: 52
+    - Pasando el video a escala de grises, calculando el histograma, pintandolo y aplicando 1 convolución: 44.4
+    - Aplicando 1 convolución: 57.8
+    - Aplicando 2 convoluciones: 49.3
+    - Aplicando 3 convoluciones: 39.8
+    - Todo: 26.5
 
 ## Entrega
 
