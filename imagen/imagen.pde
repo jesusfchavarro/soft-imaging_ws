@@ -1,16 +1,18 @@
-PGraphics pg,pg2,pg3;
-PImage img;
-PImage img2;
+PGraphics pg,pg2,pg3,pg4,pg5,pg6;
+PImage img, img2, img3, img4, img5;
 HScrollbar hs;
 
 int[] histogram = new int[256];
-int COLOR_FILTER = 5;
+int COLOR_FILTER = 1;
 
 void setup() {
-  size(790, 270);
+  size(790, 530);
   pg = createGraphics(250, 250);
   pg2 = createGraphics(250, 250);
   pg3 = createGraphics(250, 250);
+  pg4 = createGraphics(250, 250);
+  pg5 = createGraphics(250, 250);
+  pg6 = createGraphics(250, 250);
 
   img = loadImage("image.jpg");
   img.resize(250,250);
@@ -19,6 +21,7 @@ void setup() {
 
   float c;
   img.loadPixels();
+
   img2.loadPixels();
   for (int i = 0; i < img.pixels.length; i += 1) { 
     c = toGray(img.pixels[i],COLOR_FILTER);
@@ -38,6 +41,38 @@ void setup() {
   image(pg2, 270, 10); 
 
   hs = new HScrollbar(530, 255, 250, 10);
+  float[][] conv1 = { { -1, -1, -1 },
+                     { -1,  9, -1 },
+                     { -1, -1, -1 } }; 
+
+  img3 = convolution(img,conv1,3);
+
+  pg4.beginDraw();
+  pg4.image(img3,0,0);
+  pg4.endDraw();
+  image(pg4, 10, 270); 
+
+  float[][] conv2 = { { 0, 1, 0 },
+                     { 1,  -4, 1 },
+                     { 0, 1, 0 } }; 
+
+  img4 = convolution(img,conv2,3);
+
+  pg5.beginDraw();
+  pg5.image(img4,0,0);
+  pg5.endDraw();
+  image(pg5, 270, 270); 
+
+  float[][] conv3 = { { 0.11, 0.11, 0.11 },
+                     { 0.11, 0.11, 0.11 },
+                     { 0.11, 0.11, 0.11 } }; 
+
+  img5 = convolution(img,conv3,3);
+
+  pg6.beginDraw();
+  pg6.image(img5,0,0);
+  pg6.endDraw();
+  image(pg6, 530, 270); 
 
 }
 
@@ -97,4 +132,48 @@ color filterColor(color c,int i){
 color filter(color c,int i,float min, float max){
   float s = toGray(c,i);
   return s>min && s<max ? filterColor(c,i) : color(255);
+}
+
+color convolution(int x, int y, float[][] matrix, int matrixsize, PImage img)
+{
+  float rtotal = 0.0;
+  float gtotal = 0.0;
+  float btotal = 0.0;
+  int offset = matrixsize / 2;
+  for (int i = 0; i < matrixsize; i++){
+    for (int j= 0; j < matrixsize; j++){
+      // What pixel are we testing
+      int xloc = x+i-offset;
+      int yloc = y+j-offset;
+      int loc = xloc + img.width*yloc;
+      // Make sure we haven't walked off our image, we could do better here
+      loc = constrain(loc,0,img.pixels.length-1);
+      // Calculate the convolution
+      rtotal += (red(img.pixels[loc]) * matrix[i][j]);
+      gtotal += (green(img.pixels[loc]) * matrix[i][j]);
+      btotal += (blue(img.pixels[loc]) * matrix[i][j]);
+    }
+  }
+  // Make sure RGB is within range
+  rtotal = constrain(rtotal, 0, 255);
+  gtotal = constrain(gtotal, 0, 255);
+  btotal = constrain(btotal, 0, 255);
+  // Return the resulting color
+  return color(rtotal, gtotal, btotal);
+}
+
+PImage convolution(PImage image,float[][] matrix, int matrixsize){
+  PImage covImg = createImage(image.width, image.height, RGB);
+  
+  image.loadPixels();
+  covImg.loadPixels();
+  for (int x = 0; x < image.width; x++) {
+    for (int y = 0; y < image.height; y++ ) {
+      color c = convolution(x, y, matrix, matrixsize, image);
+      int loc = x + y*image.width;
+      covImg.pixels[loc] = c;
+    }
+  }
+  updatePixels();
+  return covImg;
 }
