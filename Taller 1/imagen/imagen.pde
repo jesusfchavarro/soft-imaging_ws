@@ -3,7 +3,7 @@ PImage img, img2, img3, img4, img5;
 HScrollbar hs;
 
 int[] histogram = new int[256];
-int COLOR_FILTER = 1;
+int COLOR_FILTER = 5;
 
 float[][] conv1 = { { -1, -1, -1 },
                      { -1,  9, -1 },
