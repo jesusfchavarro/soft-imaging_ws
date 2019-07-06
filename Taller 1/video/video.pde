@@ -89,7 +89,7 @@ void draw() {
     hs.update();
     hs.display();
     
-    /*img3 = convolution(myMovie,conv1,3);
+    img3 = convolution(myMovie,conv1,3);
 
     pg4.beginDraw();
     pg4.image(img3,0,0);
@@ -109,7 +109,7 @@ void draw() {
     pg6.beginDraw();
     pg6.image(img5,0,0);
     pg6.endDraw();
-    image(pg6, 530, 270); */
+    image(pg6, 530, 270); 
   }
 }
 

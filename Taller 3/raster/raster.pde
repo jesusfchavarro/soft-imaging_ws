@@ -21,7 +21,7 @@ boolean debug = true;
 String renderer = P3D;
 
 // 4. Window dimension
-int dim = 8;
+int dim = 9;
 
 void settings() {
   size(int(pow(2, dim)), int(pow(2, dim)), renderer);
