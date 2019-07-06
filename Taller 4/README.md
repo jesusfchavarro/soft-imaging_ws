@@ -22,6 +22,7 @@ Complete la tabla:
 
 1. Se realizo 3 convoluciones a 1 imagen de FullHD y a la misma escalada en 300x300. Los shaders mostraron una mejora cercana al 75%. Esto se puede constatar en el tiempo(en milisegundos) que toma hacer cada convolución y lo que toma todo el proceso de 3 convoluciones. En FullHD se toma en promedio 500 milisegundos y con shader se demora 150. Con la imagen de 300x300 se demora por software un promedio de 22 y con shader baja 9 milisegundos.
 2. Se comparo el framerate aplicando varias convoluiones a un video obteniendo con los shader una amplia mejora en el rendimiento, sin el shader se llegaba maximo a 5 fps y cada imagen se demoraba aproximadamente 500 milisegundos en aplicar la mascara, con el shader se llegaba a 60 fps y la aplicación de la mascarada nunca era mayor a 15 milisegundos.
+3. Se utilizo un ejemplo de la libreria nub "Cajas orientadas", a este se le agrego una interacción para quitar y poner la luz ambiental, se le agrego una esfera y cada esfera poseia una luz especular. Por ultimo se agrego a cada caja una luz difusa que siempre apunta a la esfera.
 
 ## Entrega
 
